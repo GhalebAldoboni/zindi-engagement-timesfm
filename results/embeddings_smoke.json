@@ -1,0 +1,40 @@
+{
+ "n_series": 96,
+ "types": [
+  "constant",
+  "ramp",
+  "sine_p128",
+  "sine_p16",
+  "sine_p256",
+  "sine_p64",
+  "sparse_bursts",
+  "spike"
+ ],
+ "layer": 19,
+ "seconds": 0.42471766471862793,
+ "knn1_acc_embedding": 0.875,
+ "knn1_acc_raw_values": 0.8125,
+ "chance": 0.11578947368421053,
+ "all_finite": true,
+ "constant_levels": [
+  0.0,
+  0.5,
+  1.0,
+  5.0,
+  50.0,
+  500.0
+ ],
+ "constant_cosine_vs_level_1": [
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "cosine_x_vs_100x_mean": 0.9999999403953552,
+ "min_centroid_cosine": -0.31237608194351196,
+ "max_centroid_cosine": 0.9897006750106812,
+ "gpu": "NVIDIA RTX A4000",
+ "torch": "2.11.0+cu128"
+}

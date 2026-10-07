@@ -1,0 +1,143 @@
+seed: 42
+data_dir: data/raw
+results_dir: results
+
+# Phase 0: candidate order to test (community-inferred, unconfirmed by Zindi).
+month_order: [11, 12, 1, 2, 3, 4, 5]
+# Month lengths in days, observed as the max day-of-month in the data. The last month
+# is only observed up to day 27 (end of data); 31 is a placeholder (cohort 6 is unused).
+month_lengths: [30, 31, 30, 31, 31, 30, 31]
+
+# Column mapping. Left null until 00_audit_data.py has shown the real schema.
+# Fill these from the audit output; never guess.
+users:
+  file: Users
+  user_id: User_ID
+  signup_month: Created At Month
+  signup_day: Created At Day_of_month
+  signup_time: Created At time
+events:                 # one entry per event source (activity, comments, participation, ...)
+  activity:      {file: UserActivity, user_id: User_ID, month: datetime Month, day: datetime Day_of_month, time: datetime time, type: Title}
+  participation: {file: CompetitionPartipation, user_id: User_ID, month: Created At Month, day: Created At Day_of_month, time: Created At time, extra: {comp: Competition ID}}
+  discussion:    {file: Discussion, user_id: User_ID, month: Created At Month, day: Created At Day_of_month, time: Created At time, extra: {comp: Competition ID}}
+  comments:      {file: Comments, user_id: User_ID, month: Created At Month, day: Created At Day_of_month, time: Created At time}
+
+processed_dir: data/processed
+
+# UserActivity timestamps run ahead of Users/CompetitionPartipation/Discussion
+# ("Signed Up" vs Users.created; "Joined Competition" vs participation rows):
+# +2 h until month 12, day 4 around midday, +1 h afterwards. The last +2 h match is
+# at 13:31 and the first +1 h match at 14:22 (activity clock), so the switch is put
+# at 14:00. Each entry applies from its `from` time (activity clock) onwards;
+# the offset is subtracted on load.
+clock_offset_hours:
+  activity:
+    - {from: null, hours: 2}
+    - {from: {month: 12, day: 4, hour: 14.0}, hours: 1}
+
+# Static user attributes used as categoricals (non-ID columns of Users).
+static_cols: [FeatureX, FeatureY, Countries_ID]
+
+# Cohort = index of signup month in month_order. Cohort 5 (month 4) is the Zindi
+# test set (next-month activity removed); cohort 6 (month 5) has no next month.
+# Neither is used for any fitting.
+excluded_cohorts: [5, 6]
+
+# Labels (STOP 1, decision D1).
+label_sources: [activity]
+label_exclude_prefixes: ["badge_"]     # "engaged" label; "any" label keeps everything
+
+# Batch/system event detection, per (event type, day), on distinct users.
+batch_detection:
+  robust_z: 10          # (users - median) / (1.4826 * MAD) over all days, MAD floored at 1
+  min_users: 50
+  # A flagged spike is confirmed as a system-wide batch only if both hold:
+  max_window_hours: 2   # this share of the day's rows falls inside one 2-hour window ...
+  min_window_share: 0.8
+  min_solo_share: 0.5   # ... and at least this share of its users did nothing else that day
+
+# Folds (STOP 1, decision D2). For test cohort k: train = cohorts < k-1, val = k-1.
+folds:
+  primary_test_cohorts: [3, 4]
+  supplementary_test_cohorts: [2]
+# Event types dropped everywhere: "Joined Competition" duplicates participation rows
+# (98.75% have a participation row within 2 min; participation has 23% more rows).
+drop_etypes: [Joined Competition]
+
+# Handcrafted feature groups (Phase 2). Every feature-window event type must map
+# to exactly one group; the build fails otherwise.
+feature_groups:
+  browse:     [Viewed All Competitions, Viewed All Discussions, Viewed Discussion,
+               Viewed All Jobs, job_page, Applied To Job, Viewed FAQ]
+  learn:      [Viewed All Learning Pages, blog_page]
+  compete:    [comp_page, Downloaded Competition Datafile, participation,
+               Created Submission, Updated Submission, Created Team, Joined Team,
+               Invited Member To Team, Updated Team, Deleted Team, Left Team,
+               Kicked Member From Team, Transferred Team Leadership,
+               Accepted Team Leadership Transfer, Revoked Team Leadership Transfer]
+  contribute: [discussion, Updated Discussion, Updated Comment, Votes (Up/Down),
+               Updated Discussion Team Participants, Report Something]
+  account:    [Signed In, Signed Out, Updated Profile, Changed Password]
+  onboarding: [Signed Up, $identify, $create_alias, Confirmed Email]
+  badges:     [badge_OCZE, badge_MLPD, badge_PLDS, badge_HYIO]
+  comments:   [comments]
+
+# Series channels (Phase 3+), APPROVED at the Phase 1 checkpoint: 4 channels, with
+# contribute merged into compete. Onboarding, badges and comments are features only.
+series_channels:
+  browse:  [browse]
+  learn:   [learn]
+  compete: [compete, contribute]
+  account: [account]
+# Phase 6 ablation: 5 channels, with contribute kept separate.
+series_channels_5:
+  browse: [browse]
+  learn: [learn]
+  compete: [compete]
+  contribute: [contribute]
+  account: [account]
+
+smoothing: {bandwidth_hours: 12, resample_len: 512}
+# TimesFM-3 embeddings (Phase 4). Facts from the timesfm 3.0.2 source:
+#  - 20 transformer layers of width 1280 (model.transformer_stack.layers[i] output[0]
+#    has shape (b, v, n_patches, 1280)); sequence attention is causal.
+#  - Input patch = 32. Context is left-padded to a multiple of 32 with MASKED
+#    positions, and fully masked leading patches are excluded from attention. This
+#    replaces the plan's "left-pad with zeros to 64": masked padding is the model's
+#    own mechanism, and zero padding would be read as real zeros.
+#  - The raw daily series (31 points) is a single patch, so 1 token per channel and
+#    mean == last pooling. Smoothed (512 points) gives 16 context patches.
+#  - Per-series running normalisation (RevIN) guards sigma=0: an all-zero channel
+#    gives one fixed "empty" embedding.
+embedding:
+  checkpoint: google/timesfm-3.0-pytorch
+  layers: {early: 4, middle: 9, late: 19}   # 0-based block index; default = late
+  default_layer: late
+  pooling: mean                 # mean over context patches | last (last context patch)
+  mode: univariate              # each channel embedded separately, then concatenated
+  horizon: 1                    # minimal; horizon tokens come after context (causal)
+  batch_size: 512
+  pca_dims: [8, 32]             # P3/P4 default comparison (STOP 2 point 3); ablation adds 64
+  storage_dtype: float16
+lightgbm: {n_estimators: 3000, learning_rate: 0.03, num_leaves: 31,
+           subsample: 0.8, colsample_bytree: 0.8, early_stopping: 100}
+# B3 tuning: random search on each fold's val cohort only, selected by val PR-AUC
+# (threshold-free; F1 on val is then used only to pick the threshold).
+lightgbm_tuning: {n_trials: 30, select_metric: pr_auc}
+# B4: MiniRocket + LR; C chosen per fold on val PR-AUC.
+minirocket: {C_grid: [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1]}
+# P1/P2: LR on embeddings; C chosen per fold on val PR-AUC (same treatment as B4).
+embedding_logreg: {C_grid: [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1]}
+# FROZEN at STOP 2 (decision 1 of the STOP 2 answers): B3's selected hyperparameters,
+# from results/b3_params.csv (search seed 42). They are reused unchanged by B3, P3
+# and P4, with no further search. The number of trees is still set by early
+# stopping on val, separately for each model and seed. 02_run_baselines.py --retune
+# reruns the search, but never overwrites this block.
+lightgbm_frozen:
+  test_c3: {num_leaves: 15, min_child_samples: 50, learning_rate: 0.03, subsample: 0.7, colsample_bytree: 0.5, reg_lambda: 0.0}
+  test_c4: {num_leaves: 4,  min_child_samples: 50, learning_rate: 0.05, subsample: 0.7, colsample_bytree: 0.5, reg_lambda: 5.0}
+  test_c2: {num_leaves: 15, min_child_samples: 10, learning_rate: 0.03, subsample: 0.8, colsample_bytree: 0.5, reg_lambda: 1.0}
+# D3: every LightGBM model (B3, P3, P4) = mean of predicted probabilities over these seeds.
+lightgbm_seeds: [0, 1, 2, 3, 4]
+bootstrap: {n: 2000}
+threshold_grid: [0.02, 0.98, 97]

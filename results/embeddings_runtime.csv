@@ -1,0 +1,17 @@
+file,series,mode,layer,layer_idx,pooling,N,C,T,dim,seconds_for_job,gpu
+raw__univariate__early__mean.npy,series/raw,univariate,early,4,mean,9026,4,31,5120,22.0,NVIDIA RTX A4000
+raw__univariate__middle__mean.npy,series/raw,univariate,middle,9,mean,9026,4,31,5120,22.0,NVIDIA RTX A4000
+raw__univariate__late__mean.npy,series/raw,univariate,late,19,mean,9026,4,31,5120,22.0,NVIDIA RTX A4000
+smooth_bw12__univariate__early__mean.npy,series/smooth_bw12,univariate,early,4,mean,9026,4,512,5120,127.8,NVIDIA RTX A4000
+smooth_bw12__univariate__early__last.npy,series/smooth_bw12,univariate,early,4,last,9026,4,512,5120,127.8,NVIDIA RTX A4000
+smooth_bw12__univariate__middle__mean.npy,series/smooth_bw12,univariate,middle,9,mean,9026,4,512,5120,127.8,NVIDIA RTX A4000
+smooth_bw12__univariate__middle__last.npy,series/smooth_bw12,univariate,middle,9,last,9026,4,512,5120,127.8,NVIDIA RTX A4000
+smooth_bw12__univariate__late__mean.npy,series/smooth_bw12,univariate,late,19,mean,9026,4,512,5120,127.8,NVIDIA RTX A4000
+smooth_bw12__univariate__late__last.npy,series/smooth_bw12,univariate,late,19,last,9026,4,512,5120,127.8,NVIDIA RTX A4000
+smooth_bw6__univariate__late__mean.npy,series/smooth_bw6,univariate,late,19,mean,9026,4,512,5120,128.9,NVIDIA RTX A4000
+smooth_bw24__univariate__late__mean.npy,series/smooth_bw24,univariate,late,19,mean,9026,4,512,5120,129.2,NVIDIA RTX A4000
+smooth_bw48__univariate__late__mean.npy,series/smooth_bw48,univariate,late,19,mean,9026,4,512,5120,129.2,NVIDIA RTX A4000
+5ch_raw__univariate__late__mean.npy,series_series_channels_5/raw,univariate,late,19,mean,9026,5,31,6400,29.2,NVIDIA RTX A4000
+5ch_smooth_bw12__univariate__late__mean.npy,series_series_channels_5/smooth_bw12,univariate,late,19,mean,9026,5,512,6400,161.0,NVIDIA RTX A4000
+raw__multivariate__late__mean.npy,series/raw,multivariate,late,19,mean,9026,4,31,5120,16.4,NVIDIA RTX A4000
+smooth_bw12__multivariate__late__mean.npy,series/smooth_bw12,multivariate,late,19,mean,9026,4,512,5120,84.6,NVIDIA RTX A4000

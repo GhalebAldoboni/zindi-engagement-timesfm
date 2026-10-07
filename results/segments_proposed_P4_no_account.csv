@@ -1,0 +1,10 @@
+model,fold,segment,n,positives,pred_pos,true_pos
+P4_pca8_P4_no_account,test_c3,no_events,111,0,0,0
+P4_pca8_P4_no_account,test_c3,has_events,2167,385,385,177
+P4_pca8_P4_no_account,test_c3,never_tracked,105,0,0,0
+P4_pca8_P4_no_account,test_c4,no_events,174,0,0,0
+P4_pca8_P4_no_account,test_c4,has_events,1826,229,268,112
+P4_pca8_P4_no_account,test_c4,never_tracked,173,0,0,0
+P4_pca8_P4_no_account,test_c2,no_events,77,0,0,0
+P4_pca8_P4_no_account,test_c2,has_events,1427,298,400,167
+P4_pca8_P4_no_account,test_c2,never_tracked,72,0,0,0

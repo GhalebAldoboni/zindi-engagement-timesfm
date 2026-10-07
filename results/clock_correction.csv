@@ -1,0 +1,4 @@
+variant,signed_up_within_1min,label_engaged_changed,label_engaged_1to0,label_any_changed,label_any_1to0
+none,0.0,5,5,2,2
+flat_by_month,0.9911,1,1,1,1
+configured,0.9994,0,0,0,0

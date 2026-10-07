@@ -1,0 +1,8 @@
+cohort,signup_month,n,label_engaged,label_any,with_window_events,role
+0,11,1262,0.1838,0.1838,0.763,test_c3(prim):train test_c4(prim):train test_c2(supp):train 
+1,12,1982,0.2725,0.7725,0.918,test_c3(prim):train test_c4(prim):train test_c2(supp):val 
+2,1,1504,0.1981,0.1988,0.949,test_c3(prim):val test_c4(prim):train test_c2(supp):test 
+3,2,2278,0.169,0.169,0.951,test_c3(prim):test test_c4(prim):val 
+4,3,2000,0.1145,0.1145,0.913,test_c4(prim):test 
+5,4,1382,,,,excluded
+6,5,2005,,,,excluded

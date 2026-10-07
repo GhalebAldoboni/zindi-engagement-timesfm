@@ -1,0 +1,10 @@
+model,fold,segment,n,positives,pred_pos,true_pos
+P1_P1_mv,test_c3,no_events,111,0,0,0
+P1_P1_mv,test_c3,has_events,2167,385,774,258
+P1_P1_mv,test_c3,never_tracked,105,0,0,0
+P1_P1_mv,test_c4,no_events,174,0,0,0
+P1_P1_mv,test_c4,has_events,1826,229,217,98
+P1_P1_mv,test_c4,never_tracked,173,0,0,0
+P1_P1_mv,test_c2,no_events,77,0,0,0
+P1_P1_mv,test_c2,has_events,1427,298,371,162
+P1_P1_mv,test_c2,never_tracked,72,0,0,0

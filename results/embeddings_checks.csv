@@ -1,0 +1,17 @@
+file,shape,dtype,finite,max_abs,empty_channel_max_spread,distinct_users,distinct_share
+5ch_raw__univariate__late__mean,"(9026, 6400)",float16,True,56.5,0.00024,3639,0.403
+5ch_smooth_bw12__univariate__late__mean,"(9026, 6400)",float16,True,176.25,0.00012,7271,0.806
+raw__multivariate__late__mean,"(9026, 5120)",float16,True,791.0,756.5625,3520,0.39
+raw__univariate__early__mean,"(9026, 5120)",float16,True,599.5,0.00098,3494,0.387
+raw__univariate__late__mean,"(9026, 5120)",float16,True,56.5,0.00024,3520,0.39
+raw__univariate__middle__mean,"(9026, 5120)",float16,True,918.0,0.00098,3520,0.39
+smooth_bw12__multivariate__late__mean,"(9026, 5120)",float16,True,151.62,10.22266,7254,0.804
+smooth_bw12__univariate__early__last,"(9026, 5120)",float16,True,403.75,0.0,7254,0.804
+smooth_bw12__univariate__early__mean,"(9026, 5120)",float16,True,402.25,0.0,7081,0.785
+smooth_bw12__univariate__late__last,"(9026, 5120)",float16,True,359.0,0.0,7254,0.804
+smooth_bw12__univariate__late__mean,"(9026, 5120)",float16,True,176.25,0.0,7252,0.803
+smooth_bw12__univariate__middle__last,"(9026, 5120)",float16,True,715.0,0.0,7254,0.804
+smooth_bw12__univariate__middle__mean,"(9026, 5120)",float16,True,715.0,0.0,7202,0.798
+smooth_bw24__univariate__late__mean,"(9026, 5120)",float16,True,130.12,0.0,7274,0.806
+smooth_bw48__univariate__late__mean,"(9026, 5120)",float16,True,22.48,0.0,7300,0.809
+smooth_bw6__univariate__late__mean,"(9026, 5120)",float16,True,413.0,0.0,7201,0.798

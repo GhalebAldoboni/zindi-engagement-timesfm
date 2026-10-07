@@ -1,0 +1,41 @@
+group,channel,source,etype,rows,users,user_share
+account,account,activity,Updated Profile,9188,2315,0.2565
+account,account,activity,Signed In,2129,1465,0.1623
+account,account,activity,Signed Out,828,481,0.0533
+badges,,activity,badge_OCZE,3676,3581,0.3967
+badges,,activity,badge_MLPD,169,38,0.0042
+badges,,activity,badge_PLDS,7,5,0.0006
+browse,browse,activity,Viewed All Competitions,31596,7412,0.8212
+browse,browse,activity,Viewed All Discussions,26118,7831,0.8676
+browse,browse,activity,Viewed All Jobs,2297,952,0.1055
+browse,browse,activity,job_page,878,396,0.0439
+browse,browse,activity,Viewed Discussion,478,245,0.0271
+browse,browse,activity,Applied To Job,62,31,0.0034
+browse,browse,activity,Viewed FAQ,50,41,0.0045
+comments,,comments,comments,140,77,0.0085
+compete,compete,activity,comp_page,20604,3699,0.4098
+compete,compete,activity,Downloaded Competition Datafile,10839,2226,0.2466
+compete,compete,participation,participation,5025,3721,0.4123
+compete,compete,activity,Created Submission,4792,581,0.0644
+compete,compete,activity,Updated Submission,1233,227,0.0251
+compete,compete,activity,Joined Team,250,244,0.027
+compete,compete,activity,Invited Member To Team,190,167,0.0185
+compete,compete,activity,Created Team,182,171,0.0189
+compete,compete,activity,Updated Team,21,18,0.002
+compete,compete,activity,Deleted Team,19,18,0.002
+compete,compete,activity,Transferred Team Leadership,6,6,0.0007
+compete,compete,activity,Accepted Team Leadership Transfer,4,4,0.0004
+compete,compete,activity,Kicked Member From Team,3,3,0.0003
+compete,compete,activity,Left Team,1,1,0.0001
+contribute,compete,activity,Updated Discussion,2886,428,0.0474
+contribute,compete,discussion,discussion,722,602,0.0667
+contribute,compete,activity,Updated Comment,237,120,0.0133
+contribute,compete,activity,Updated Discussion Team Participants,4,3,0.0003
+contribute,compete,activity,Votes (Up/Down),3,3,0.0003
+contribute,compete,activity,Report Something,1,1,0.0001
+learn,learn,activity,Viewed All Learning Pages,14563,7039,0.7799
+learn,learn,activity,blog_page,1285,609,0.0675
+onboarding,,activity,$identify,8673,6854,0.7594
+onboarding,,activity,Signed Up,8094,7841,0.8687
+onboarding,,activity,$create_alias,7017,6747,0.7475
+onboarding,,activity,Confirmed Email,6576,6390,0.708

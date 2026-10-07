@@ -1,0 +1,8 @@
+etype,month_idx,day,users,rows,type_median_users,robust_z,window_share,solo_share,confirmed
+badge_OCZE,2,15,2892,3005,22.5,86.0,0.993,0.944,True
+Updated Submission,4,5,58,206,2.0,18.9,0.34,0.034,False
+Confirmed Email,1,27,301,303,32.0,14.0,0.446,0.0,False
+$create_alias,1,27,292,296,35.5,12.4,0.456,0.0,False
+Signed Up,1,27,328,333,41.0,11.7,0.462,0.0,False
+Updated Profile,1,27,130,444,16.5,10.9,0.403,0.0,False
+$identify,1,27,337,400,43.5,10.4,0.455,0.0,False

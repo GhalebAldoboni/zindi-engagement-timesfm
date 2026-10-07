@@ -1,0 +1,3 @@
+population,candidate,verdict,harm,f1_diff,f1_lo,f1_hi,roc_auc_diff,roc_auc_lo,roc_auc_hi,pr_auc_diff,pr_auc_lo,pr_auc_hi
+all,P4_pca8,INCONCLUSIVE,none,0.013,-0.0013,0.0271,0.0013,-0.0015,0.0042,0.0024,-0.0028,0.0078
+excl_never_tracked,P4_pca8,INCONCLUSIVE,none,0.013,-0.0014,0.0267,0.0014,-0.0017,0.0044,0.0024,-0.0027,0.0078

@@ -1,0 +1,11 @@
+data/
+results/cache/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.venv-tfm/
+*.log
+.DS_Store
+.pytest_cache/
+results/audit.md
