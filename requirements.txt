@@ -12,3 +12,7 @@ pyarrow
 tabulate
 xgboost<2.1
 catboost
+seaborn
+nbformat
+nbconvert
+ipykernel

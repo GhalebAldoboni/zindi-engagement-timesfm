@@ -20,6 +20,20 @@ competition's top leaderboard scores are not real F1 (see below).
 2,000 resamples. Targeting view: the top 10% of users ranked by the best model return at 3.9×
 the base rate.*
 
+## Course deliverables
+
+| Deliverable | Where |
+|---|---|
+| Presentation (PDF) | `presentation/` (slides exported from the deck) |
+| Presentation notebook (executed, rubric order) | [`notebooks/presentation.ipynb`](notebooks/presentation.ipynb) · read-only view: [`docs/presentation_notebook.html`](docs/presentation_notebook.html) |
+| Full report | [`REPORT.md`](REPORT.md) (final PDF/notebook report due Oct 10) |
+| Code | `src/`, `scripts/`, `tests/` |
+
+The notebook follows the grading rubric: **1** problem & motivation · **2** loading with pandas, X and y ·
+**3** preparation (each step motivated) · **4** Seaborn EDA · **5** cross-validation, metric, models and
+hyper-parameters · **6** results · **7** impact and conclusion. Rebuild it with
+`.venv/bin/python notebooks/build_notebook.py` (needs the data in `data/raw/`).
+
 ---
 
 ## 1. The problem
@@ -161,6 +175,9 @@ TimesFM embeddings are cached in `results/cache/emb/`; to recompute them add
 `scripts/dev/dev_neural.py` (TabICLv2, MVRN, scale-aware TimesFM).
 
 ```
+notebooks/             presentation notebook (rubric order) and its builder
+presentation/          slide deck PDF
+docs/                  README figures, Seaborn EDA figures, notebook HTML export
 configs/default.yaml   all settings: column mapping, folds, frozen hyper-parameters
 src/                   loading, labels, features, series, embeddings, models, evaluation
 scripts/00–06          pipeline: audit → dataset → series → baselines → embeddings → models → ablations → report
