@@ -71,8 +71,9 @@ pd.DataFrame({name: {"rows": len(df), "columns": df.shape[1]} for name, df in ta
 code("""
 users = tables["Users"]
 activity = tables["UserActivity"]
-print(users.head(3).to_string(index=False)); print()
-print(activity.head(3).to_string(index=False))
+show = lambda df: df.head(3).assign(User_ID=["user_a", "user_b", "user_c"]).to_string(index=False)   # IDs not shown (data terms)
+print(show(users)); print()
+print(show(activity))
 """)
 
 md("""
@@ -101,7 +102,7 @@ X = (build_features(labelled, window, cfg)
      .loc[labelled.uid])
 y = labelled.set_index("uid").label_engaged.loc[X.index]
 print("X:", X.shape, "   y:", y.shape, "   positive rate:", round(y.mean(), 3))
-X.iloc[:3, :8]
+X.iloc[:3, :8].reset_index(drop=True)          # user IDs not displayed
 """)
 
 md("""
