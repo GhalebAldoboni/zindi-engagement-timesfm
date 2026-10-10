@@ -11,7 +11,7 @@ the train fold only; thresholds are tuned on val.
   --raw-emb / --smooth-emb   embedding file stems in results/cache/emb/ (ablations)
   --tag                      suffix for model names and output files (ablations)
   --label                    label_engaged (default) or label_any (sensitivity)
-  --pca-dims                 override pca_dims
+  --pca-dims                 override pca_dims (-1 = full embedding, no PCA)
   --models                   subset, e.g. P4 (default: all)
 
 Writes results/proposed{tag}{label sfx}.csv, segments_proposed*.csv, and
@@ -88,10 +88,17 @@ def main():
                 preds[p_name], extras[p_name] = (pv, pt), {"C": C}
             if pref in args.models:
                 for k in dims:
-                    (P_tr, P_va, P_te), evr = pca_block(Z[0], Z[1:], k, cfg["seed"], f"{rep}_emb")
+                    if k == -1:                      # full embedding, no PCA (standardised on train)
+                        from sklearn.preprocessing import StandardScaler
+                        sc = StandardScaler().fit(Z[0])
+                        cols = [f"{rep}_emb{i}" for i in range(Z[0].shape[1])]
+                        P_tr, P_va, P_te = (pd.DataFrame(sc.transform(z), columns=cols) for z in Z)
+                        evr = 1.0
+                    else:
+                        (P_tr, P_va, P_te), evr = pca_block(Z[0], Z[1:], k, cfg["seed"], f"{rep}_emb")
                     H = [pd.concat([x, p], axis=1) for x, p in zip(Xc, (P_tr, P_va, P_te))]
                     pv, pt, models = lightgbm_seed_avg(H[0], y_tr, H[1], y_va, H[2], params, cfg)
-                    name = f"{pref}_pca{k}"
+                    name = f"{pref}_full" if k == -1 else f"{pref}_pca{k}"
                     preds[name] = (pv, pt)
                     extras[name] = {"pca_explained_var": round(evr, 4),
                                     "best_iters": ",".join(str(m.best_iteration_) for m in models)}
