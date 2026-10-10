@@ -40,9 +40,10 @@ were evaluated with rolling-origin chronological splits, using F1, ROC-AUC and P
 confidence intervals. The pre-registered TimesFM hybrid reached F1~$=0.459$ against $0.446$ for a tuned
 LightGBM, but the improvement was statistically inconclusive; an ablation over the PCA dimension of the
 embedding (2 to 128 components and the full 5{,}120-dimensional embedding) shows no setting that reliably improves ranking quality over
-the baseline. In later exploratory work, CatBoost on domain-specific features reached F1~$=0.482$,
-ROC-AUC~$=0.812$ and PR-AUC~$=0.505$, with confidence intervals above the baseline. TimesFM did not help
-because its per-series normalisation removes absolute activity level, one of the strongest predictors. The
+the baseline. In later exploratory work, CatBoost on engineered features reached F1~$=0.482$,
+ROC-AUC~$=0.812$ and PR-AUC~$=0.505$, with confidence intervals above the baseline. A plausible explanation for
+the limited value of TimesFM, supported by a diagnostic test but not established as the cause, is that its
+per-series normalisation removes absolute activity level, one of the strongest predictors. The
 best model is most useful as a ranking tool: the top 10\% of ranked users return at 3.9 times the base rate.
 \end{abstract}
 
@@ -85,7 +86,7 @@ Table & Rows & Role in the project\\
 \texttt{Users.csv} & 12{,}413 & Signup time, country, masked user attributes\\
 \texttt{CompetitionPartipation.csv} & 8{,}385 & Competition membership and submissions\\
 \texttt{Discussion.csv} / \texttt{Comments.csv} & 1{,}439 / 467 & Community activity\\
-Competition / Blog / Job metadata & 247 / 117 / 34 & Context for domain features\\
+Competition / Blog / Job metadata & 247 / 117 / 34 & Context for engineered features\\
 \bottomrule
 \end{tabularx}
 \caption{Raw data sources. IDs and months are masked; the logs cover seven months.}
@@ -280,21 +281,27 @@ Difference, 95\% CI & $+0.013\ci{-0.001}{+0.027}$ & $+0.001\ci{-0.002}{+0.004}$ 
 \caption{Pre-registered comparison on the test cohorts. All intervals include zero: the verdict is \textbf{inconclusive}.}
 \label{tab:prereg}
 \end{table}
-An inconclusive result does not prove that TimesFM has zero value; it shows that any real gain is smaller
-than about 0.03 F1 and 0.01 PR-AUC.
+An inconclusive result does not prove that TimesFM has zero value. The 95\% intervals are compatible with no
+improvement and with improvements of up to roughly 0.03 F1 and 0.01 PR-AUC; under the assumptions of the
+bootstrap analysis (two test cohorts, resampling of users within each cohort), substantially larger gains are
+unlikely, but this is a statement of uncertainty, not a guaranteed upper bound, and effects could differ on
+other cohorts or platforms.
 
 \input{ablation_pca.tex}
 
-\section{Why the Foundation Model Did Not Help}\label{sec:why}
+\section{Why the Foundation Model May Not Have Helped}\label{sec:why}
 TimesFM normalises each input series by its own level and spread (reversible instance
 normalisation~\citep{kim2022revin}). In our smoke test a series and the same series multiplied by 100 produced
-identical embeddings, $\cos\big(e(x), e(100x)\big)=1.000$. For engagement this is harmful: a user with 1
-event on day 5 and a user with 100 events on day 5 become indistinguishable, although activity level is
-highly predictive. A scale-aware variant (a fixed reference patch prepended to every series) made the
-embeddings level-sensitive but did not improve validation performance, because magnitude is already captured
-by the count features; zero-shot TimesFM forecasts of next-month activity were weaker than a simple event
-count. A custom multi-view network that learns per-user weights over its inputs put only 4--5\% of its weight
-on the TimesFM view.
+identical embeddings, $\cos\big(e(x), e(100x)\big)=1.000$. For engagement this is likely to be harmful: a
+user with 1 event on day 5 and a user with 100 events on day 5 become indistinguishable, although activity
+level is highly predictive. We offer this as a plausible explanation rather than an established cause; other
+factors may contribute, such as the shortness and sparsity of 31-day series, which differ from the long, dense
+series TimesFM was pretrained on. Three further diagnostics are consistent with it, without proving it. A
+scale-aware variant (a fixed reference patch prepended to every series) made the embeddings level-sensitive
+but did not improve validation performance, possibly because magnitude is already captured by the count
+features. Zero-shot TimesFM forecasts of next-month activity were weaker than a simple event count. A custom
+multi-view network that learns per-user weights over its inputs put only 4--5\% of its weight on the
+TimesFM view.
 
 \begin{figure}[H]
 \centering
@@ -320,7 +327,7 @@ Logistic regression (B1) & 0.453 & 0.778 & 0.456\\
 Tuned LightGBM (B3) & 0.446 & 0.794 & 0.472\\
 MiniRocket (B4) & 0.457 & 0.788 & 0.467\\
 TimesFM hybrid, pre-registered (P4) & 0.459 & 0.795 & 0.474\\
-\textbf{CatBoost + domain features (N2)} & \textbf{0.482} & \textbf{0.812} & \textbf{0.505}\\
+\textbf{CatBoost + engineered features (N2)} & \textbf{0.482} & \textbf{0.812} & \textbf{0.505}\\
 Ensemble including TimesFM (N4) & 0.496 & 0.813 & 0.501\\
 \bottomrule
 \end{tabular}
@@ -405,17 +412,17 @@ normalisation, stacking, a GRU and TabICLv2) gave no gain over N2, consistent wi
 \end{itemize}
 
 \section{Discussion and Conclusion}
-Better understanding of the data produced more value than model complexity. TimesFM's normalisation removes
-absolute activity level, which matters most for retention; domain features (returning across days,
-participating in live competitions, joining later rather than immediately, being active near the month end)
-supplied the context the foundation model lacks. Chronological validation produced lower but realistic
+Better understanding of the data produced more value than model complexity. A plausible reason TimesFM added
+little is that its normalisation removes absolute activity level, which appears to matter most for retention;
+the engineered features (returning across days, participating in live competitions, joining later rather than
+immediately, being active near the month end) supplied the context the foundation model lacks. Chronological validation produced lower but realistic
 estimates, and the highest test number was not automatically chosen: N4's F1 gain over N2 was not
 significant.
 
 The preferred CatBoost model reached F1~$=0.482$, ROC-AUC~$=0.812$ and PR-AUC~$=0.505$, a statistically
 supported improvement over tuned LightGBM, while the pre-registered TimesFM hypothesis was not established.
 Useful prediction is possible, but the strongest gains came from data quality, leakage-safe evaluation and
-domain-aware features, not from the foundation model.
+engineered features, not from the foundation model.
 
 \paragraph{Future work.} Evaluate on further cohorts; study the difficult 6--20-event segment; test sequence
 models that preserve absolute scale; and run a randomised outreach experiment to move from return prediction
